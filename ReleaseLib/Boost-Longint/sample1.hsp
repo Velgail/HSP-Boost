@@ -1,0 +1,8 @@
+#include "boost-longint.as"
+  a=boost_longint(1)
+  for i,1,10000
+    a*=i
+    wait 0
+  next
+  s=str(a)
+  mesbox s,640,480
