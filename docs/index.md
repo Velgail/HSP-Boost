@@ -2,7 +2,7 @@
 layout: default
 ---
  
-# leko.github.com
+# HSP-Boost
  
 ## とりあえず作ってみたGithubページ
  
