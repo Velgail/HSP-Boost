@@ -12,9 +12,9 @@
 #include <cstring>
 #include <string>
 #include <memory>
-#include "../../HSP_Includes/hsp3plugin.h"
-#include "../../HSP_Includes/hspvar_core.h"
-#include "../../HSP_Includes/hsp3debug.h"
+#include "../HSP_Includes/hsp3plugin.h"
+#include "../HSP_Includes/hspvar_core.h"
+#include "../HSP_Includes/hsp3debug.h"
 #include <boost/multiprecision/cpp_int.hpp>
 /*------------------------------------------------------------*/
 /*
@@ -42,9 +42,9 @@ static PDAT *HspVarBoost_Longint_GetPtr(PVal *pval)
 
 static void *HspVarBoost_Longint_Cnv(const void *buffer, int flag)
 {
-	//		ƒŠƒNƒGƒXƒg‚³‚ê‚½Œ^ -> Ž©•ª‚ÌŒ^‚Ö‚Ì•ÏŠ·‚ðs‚È‚¤
-	//		(‘g‚Ýž‚ÝŒ^‚É‚Ì‚Ý‘Î‰ž‚ÅOK)
-	//		(ŽQÆŒ³‚Ìƒf[ƒ^‚ð”j‰ó‚µ‚È‚¢‚±‚Æ)
+	//		ãƒªã‚¯ã‚¨ã‚¹ãƒˆã•ã‚ŒãŸåž‹ -> è‡ªåˆ†ã®åž‹ã¸ã®å¤‰æ›ã‚’è¡Œãªã†
+	//		(çµ„ã¿è¾¼ã¿åž‹ã«ã®ã¿å¯¾å¿œã§OK)
+	//		(å‚ç…§å…ƒã®ãƒ‡ãƒ¼ã‚¿ã‚’ç ´å£Šã—ãªã„ã“ã¨)
 	//
 	switch (flag) {
 	case HSPVAR_FLAG_STR:
@@ -65,10 +65,10 @@ static void *HspVarBoost_Longint_Cnv(const void *buffer, int flag)
 
 static void *HspVarBoost_Longint_CnvCustom(const void *buffer, int flag)
 {
-	//		(ƒJƒXƒ^ƒ€ƒ^ƒCƒv‚Ì‚Ý)
-	//		Ž©•ª‚ÌŒ^ -> ƒŠƒNƒGƒXƒg‚³‚ê‚½Œ^ ‚Ö‚Ì•ÏŠ·‚ðs‚È‚¤
-	//		(‘g‚Ýž‚ÝŒ^‚É‘Î‰ž‚³‚¹‚é)
-	//		(ŽQÆŒ³‚Ìƒf[ƒ^‚ð”j‰ó‚µ‚È‚¢‚±‚Æ)
+	//		(ã‚«ã‚¹ã‚¿ãƒ ã‚¿ã‚¤ãƒ—ã®ã¿)
+	//		è‡ªåˆ†ã®åž‹ -> ãƒªã‚¯ã‚¨ã‚¹ãƒˆã•ã‚ŒãŸåž‹ ã¸ã®å¤‰æ›ã‚’è¡Œãªã†
+	//		(çµ„ã¿è¾¼ã¿åž‹ã«å¯¾å¿œã•ã›ã‚‹)
+	//		(å‚ç…§å…ƒã®ãƒ‡ãƒ¼ã‚¿ã‚’ç ´å£Šã—ãªã„ã“ã¨)
 	//
 	boost_longint p;
 	p = *(boost_longint *)buffer;
@@ -95,8 +95,8 @@ static void *HspVarBoost_Longint_CnvCustom(const void *buffer, int flag)
 
 static int GetVarSize(PVal *pval)
 {
-	//		PVALƒ|ƒCƒ“ƒ^‚Ì•Ï”‚ª•K—v‚Æ‚·‚éƒTƒCƒY‚ðŽæ“¾‚·‚é
-	//		(sizeƒtƒB[ƒ‹ƒh‚ÉÝ’è‚³‚ê‚é)
+	//		PVALãƒã‚¤ãƒ³ã‚¿ã®å¤‰æ•°ãŒå¿…è¦ã¨ã™ã‚‹ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
+	//		(sizeãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã«è¨­å®šã•ã‚Œã‚‹)
 	//
 	int size;
 	size = pval->len[1];
@@ -110,7 +110,7 @@ static int GetVarSize(PVal *pval)
 
 static void HspVarBoost_Longint_Free(PVal *pval)
 {
-	//		PVALƒ|ƒCƒ“ƒ^‚Ì•Ï”ƒƒ‚ƒŠ‚ð‰ð•ú‚·‚é
+	//		PVALãƒã‚¤ãƒ³ã‚¿ã®å¤‰æ•°ãƒ¡ãƒ¢ãƒªã‚’è§£æ”¾ã™ã‚‹
 	//
 	if (pval->mode == HSPVAR_MODE_MALLOC) { sbFree(pval->pt); }
 	pval->pt = NULL;
@@ -120,16 +120,16 @@ static void HspVarBoost_Longint_Free(PVal *pval)
 
 static void HspVarBoost_Longint_Alloc(PVal *pval, const PVal *pval2)
 {
-	//		pval•Ï”‚ª•K—v‚Æ‚·‚éƒTƒCƒY‚ðŠm•Û‚·‚éB
-	//		(pval‚ª‚·‚Å‚ÉŠm•Û‚³‚ê‚Ä‚¢‚éƒƒ‚ƒŠ‰ð•ú‚ÍŒÄ‚Ño‚µ‘¤‚ªs‚È‚¤)
-	//		(flag‚ÌÝ’è‚ÍŒÄ‚Ño‚µ‘¤‚ªs‚È‚¤)
-	//		(pval2‚ªNULL‚Ìê‡‚ÍAV‹Kƒf[ƒ^)
-	//		(pval2‚ªŽw’è‚³‚ê‚Ä‚¢‚éê‡‚ÍApval2‚Ì“à—e‚ðŒp³‚µ‚ÄÄŠm•Û)
+	//		pvalå¤‰æ•°ãŒå¿…è¦ã¨ã™ã‚‹ã‚µã‚¤ã‚ºã‚’ç¢ºä¿ã™ã‚‹ã€‚
+	//		(pvalãŒã™ã§ã«ç¢ºä¿ã•ã‚Œã¦ã„ã‚‹ãƒ¡ãƒ¢ãƒªè§£æ”¾ã¯å‘¼ã³å‡ºã—å´ãŒè¡Œãªã†)
+	//		(flagã®è¨­å®šã¯å‘¼ã³å‡ºã—å´ãŒè¡Œãªã†)
+	//		(pval2ãŒNULLã®å ´åˆã¯ã€æ–°è¦ãƒ‡ãƒ¼ã‚¿)
+	//		(pval2ãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ã€pval2ã®å†…å®¹ã‚’ç¶™æ‰¿ã—ã¦å†ç¢ºä¿)
 	//
 	int i, size;
 	char *pt;
 	boost_longint *fv;
-	if (pval->len[1] < 1) pval->len[1] = 1;		// ”z—ñ‚ðÅ’á1‚ÍŠm•Û‚·‚é
+	if (pval->len[1] < 1) pval->len[1] = 1;		// é…åˆ—ã‚’æœ€ä½Ž1ã¯ç¢ºä¿ã™ã‚‹
 	size = GetVarSize(pval);
 	pval->mode = HSPVAR_MODE_MALLOC;
 	pt = sbAlloc(size);
@@ -146,7 +146,7 @@ static void HspVarBoost_Longint_Alloc(PVal *pval, const PVal *pval2)
 /*
 static void *HspVarBoost_Longint_ArrayObject( PVal *pval, int *mptype )
 {
-//		”z—ñ—v‘f‚ÌŽw’è (•¶Žš—ñ/˜A‘z”z—ñ—p)
+//		é…åˆ—è¦ç´ ã®æŒ‡å®š (æ–‡å­—åˆ—/é€£æƒ³é…åˆ—ç”¨)
 //
 throw HSPERR_UNSUPPORTED_FUNCTION;
 return NULL;
@@ -346,11 +346,11 @@ EXPORT void HspVarBoost_Longint_Init(HspVarProc *p)
 	p->RrI = HspVarBoost_Longint_RrI;
 	p->LrI = HspVarBoost_Longint_LrI;
 
-	p->vartype_name = "boost_longint";				// ƒ^ƒCƒv–¼
-	p->version = 0x001;					// Œ^ƒ^ƒCƒvƒ‰ƒ“ƒ^ƒCƒ€ƒo[ƒWƒ‡ƒ“(0x100 = 1.0)
+	p->vartype_name = "boost_longint";				// ã‚¿ã‚¤ãƒ—å
+	p->version = 0x001;					// åž‹ã‚¿ã‚¤ãƒ—ãƒ©ãƒ³ã‚¿ã‚¤ãƒ ãƒãƒ¼ã‚¸ãƒ§ãƒ³(0x100 = 1.0)
 	p->support = HSPVAR_SUPPORT_STORAGE | HSPVAR_SUPPORT_FLEXARRAY;
-	// ƒTƒ|[ƒgó‹µƒtƒ‰ƒO(HSPVAR_SUPPORT_*)
-	p->basesize = sizeof(boost_longint);		// ‚P‚Â‚Ìƒf[ƒ^‚ªŽg—p‚·‚éƒTƒCƒY(byte) / ‰Â•Ï’·‚ÌŽž‚Í-1
+	// ã‚µãƒãƒ¼ãƒˆçŠ¶æ³ãƒ•ãƒ©ã‚°(HSPVAR_SUPPORT_*)
+	p->basesize = sizeof(boost_longint);		// ï¼‘ã¤ã®ãƒ‡ãƒ¼ã‚¿ãŒä½¿ç”¨ã™ã‚‹ã‚µã‚¤ã‚º(byte) / å¯å¤‰é•·ã®æ™‚ã¯-1
 	mytype = p->flag;
 }
 

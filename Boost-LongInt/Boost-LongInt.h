@@ -1,5 +1,5 @@
 #pragma once
-#include "../../HSP_Includes/hspvar_core.h"
+#include "../HSP_Includes/hspvar_core.h"
 
 #ifdef __cplusplus
 extern "C" {

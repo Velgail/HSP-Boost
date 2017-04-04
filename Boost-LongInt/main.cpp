@@ -9,7 +9,7 @@
 #include <Windows.h>
 #include <cstdio>
 #include <cstdlib>
-#include "../../HSP_Includes/hsp3plugin.h"
+#include "../HSP_Includes/hsp3plugin.h"
 
 #include "Boost-LongInt.h"
 
@@ -20,39 +20,59 @@ controller
 */
 /*------------------------------------------------------------*/
 typedef boost::multiprecision::cpp_int boost_longint;
-static boost_longint ref_fval;						// •Ô’l‚Ì‚½‚ß‚Ì•Ï”
+static boost_longint ref_fval;						// è¿”å€¤ã®ãŸã‚ã®å¤‰æ•°
 static double dp1;
 
 static void *reffunc(int *type_res, int cmd)
 {
-	//		ŠÖ”EƒVƒXƒeƒ€•Ï”‚ÌÀsˆ— (’l‚ÌQÆ‚ÉŒÄ‚Î‚ê‚Ü‚·)
+	//		é–¢æ•°ãƒ»ã‚·ã‚¹ãƒ†ãƒ å¤‰æ•°ã®å®Ÿè¡Œå‡¦ç† (å€¤ã®å‚ç…§æ™‚ã«å‘¼ã°ã‚Œã¾ã™)
 	//
-	//			'('‚Ån‚Ü‚é‚©‚ğ’²‚×‚é
+	//			'('ã§å§‹ã¾ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	//
 	if (*type != TYPE_MARK) puterror(HSPERR_INVALID_FUNCPARAM);
 	if (*val != '(') puterror(HSPERR_INVALID_FUNCPARAM);
 	code_next();
 
+	int cp;
+	switch (cmd) {							// ã‚µãƒ–ã‚³ãƒãƒ³ãƒ‰ã”ã¨ã®åˆ†å²
 
-	switch (cmd) {							// ƒTƒuƒRƒ}ƒ“ƒh‚²‚Æ‚Ì•ªŠò
+	case 0x00:								// boost_longinté–¢æ•°
 
-	case 0x00:								// boost_longintŠÖ”
-
-		dp1 = code_getd();					// ®”’l‚ğæ“¾(ƒfƒtƒHƒ‹ƒg‚È‚µ)
-		ref_fval = (boost_longint)dp1;				// •Ô’l‚ğİ’è
+		cp = code_getprm();
+		switch (cp) {
+		case PARAM_DEFAULT:
+		case PARAM_END:
+		case PARAM_ENDSPLIT:
+			ref_fval = boost_longint();
+			break;
+		default:
+			switch (mpval->flag) {
+			case 2:
+				ref_fval = boost_longint((char*)mpval->pt);
+				break;
+			case 3:
+				ref_fval = boost_longint(*(double*)mpval->pt);
+				break;
+			case 4:
+				ref_fval = boost_longint(*(int*)mpval->pt);
+				break;
+			default:
+				ref_fval = boost_longint(0);
+			}
+		}
 		break;
 
 	default:
 		puterror(HSPERR_UNSUPPORTED_FUNCTION);
 	}
 
-	//			'('‚ÅI‚í‚é‚©‚ğ’²‚×‚é
+	//			'('ã§çµ‚ã‚ã‚‹ã‹ã‚’èª¿ã¹ã‚‹
 	//
 	if (*type != TYPE_MARK) puterror(HSPERR_INVALID_FUNCPARAM);
 	if (*val != ')') puterror(HSPERR_INVALID_FUNCPARAM);
 	code_next();
 
-	*type_res = HspVarBoost_Longint_typeid();		// •Ô’l‚Ìƒ^ƒCƒv‚ğw’è‚·‚é
+	*type_res = HspVarBoost_Longint_typeid();		// è¿”å€¤ã®ã‚¿ã‚¤ãƒ—ã‚’æŒ‡å®šã™ã‚‹
 	return (void *)&ref_fval;
 }
 
@@ -61,7 +81,7 @@ static void *reffunc(int *type_res, int cmd)
 
 static int termfunc(int option)
 {
-	//		I—¹ˆ— (ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹‚ÉŒÄ‚Î‚ê‚Ü‚·)
+	//		çµ‚äº†å‡¦ç† (ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ™‚ã«å‘¼ã°ã‚Œã¾ã™)
 	//
 	return 0;
 }
@@ -75,7 +95,7 @@ interface
 
 int WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, PVOID pvReserved)
 {
-	//		DLLƒGƒ“ƒgƒŠ[ (‰½‚à‚·‚é•K—v‚Í‚ ‚è‚Ü‚¹‚ñ)
+	//		DLLã‚¨ãƒ³ãƒˆãƒªãƒ¼ (ä½•ã‚‚ã™ã‚‹å¿…è¦ã¯ã‚ã‚Šã¾ã›ã‚“)
 	//
 	return TRUE;
 }
@@ -83,14 +103,14 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, PVOID pvReserved)
 
 EXPORT void WINAPI hsp3cmdinit(HSP3TYPEINFO *info)
 {
-	//		ƒvƒ‰ƒOƒCƒ“‰Šú‰» (ÀsEI—¹ˆ—‚ğ“o˜^‚µ‚Ü‚·)
+	//		ãƒ—ãƒ©ã‚°ã‚¤ãƒ³åˆæœŸåŒ– (å®Ÿè¡Œãƒ»çµ‚äº†å‡¦ç†ã‚’ç™»éŒ²ã—ã¾ã™)
 	//
-	hsp3sdk_init(info);		// SDK‚Ì‰Šú‰»(Å‰‚És‚È‚Á‚Ä‰º‚³‚¢)
+	hsp3sdk_init(info);		// SDKã®åˆæœŸåŒ–(æœ€åˆã«è¡Œãªã£ã¦ä¸‹ã•ã„)
 
-	info->reffunc = reffunc;		// QÆŠÖ”(reffunc)‚Ì“o˜^
-	info->termfunc = termfunc;		// I—¹ŠÖ”(termfunc)‚Ì“o˜^
+	info->reffunc = reffunc;		// å‚ç…§é–¢æ•°(reffunc)ã®ç™»éŒ²
+	info->termfunc = termfunc;		// çµ‚äº†é–¢æ•°(termfunc)ã®ç™»éŒ²
 
-	registvar(-1, HspVarBoost_Longint_Init);		// V‚µ‚¢Œ^‚Ì’Ç‰Á
+	registvar(-1, HspVarBoost_Longint_Init);		// æ–°ã—ã„å‹ã®è¿½åŠ 
 }
 
 /*------------------------------------------------------------*/
