@@ -1,0 +1,11 @@
+#define boost-fixedLevel 4
+#include "Boost-FixedPoint.as"
+    a=boost_fixedpoint(1.236)
+    b=boost_fixedpoint(1)
+    c="1.234"
+    c=boost_fixedpoint(c)
+    mes a
+    mes b
+    mes c
+    mes a*c
+    mes a/c
